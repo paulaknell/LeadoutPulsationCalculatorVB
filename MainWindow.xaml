@@ -57,11 +57,12 @@
         <TextBox Height="336" Margin="163,0,0,120" x:Name="TextBox8" VerticalAlignment="Bottom" VerticalScrollBarVisibility="Visible" Width="118" HorizontalAlignment="Left" />
         <CheckBox x:Name="checkBox" Content="Use profiles boxes" HorizontalAlignment="Left" Margin="349,238,0,0" VerticalAlignment="Top" Height="26" Width="126"/>
         <TextBlock Height="29" HorizontalAlignment="Left" Margin="1,294,0,0" x:Name="TextBlock21_Copy" VerticalAlignment="Top" Width="124" ><Run Text="Track lead "/><Run Text="out"/><Run Text=" profile"/></TextBlock>
-        <TextBlock x:Name="textBlock_1" HorizontalAlignment="Left" Height="18" Margin="163,328,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="157"><Run Text="Combined "/><Run Text="Flow"/><Run Text=" Output"/><Run Text=" L/M"/></TextBlock>
-        <TextBlock x:Name="textBlock_2" HorizontalAlignment="Left" Height="18" Margin="10,328,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132"><Run Text="Single tube "/><Run Text="Flow"/><Run Text=" L/M"/></TextBlock>
+        <TextBlock x:Name="textBlock_1" HorizontalAlignment="Left" Height="18" Margin="325,328,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="157"><Run Text="Combined "/><Run Text="Flow"/><Run Text=" Output"/><Run Text=" L/M"/></TextBlock>
+        <TextBlock x:Name="textBlock_2" HorizontalAlignment="Left" Height="18" Margin="10,328,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="148"><Run Text="Single tube "/><Run Text="Flow"/><Run Text=" "/><Run Text="OneR "/><Run Text="L/M"/></TextBlock>
         <TextBlock x:Name="textBlock_3" HorizontalAlignment="Left" Height="24" Margin="700,21,0,0" TextWrapping="Wrap" Text="Profile Output (mm)" VerticalAlignment="Top" Width="131"/>
         <TextBlock Height="31" HorizontalAlignment="Left" Margin="207,157,0,0" x:Name="TextBlock11_Copy" VerticalAlignment="Top" Width="72" ><Run Text=" (degrees)"/></TextBlock>
         <Button Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="PauseButton" Content="Pause" HorizontalAlignment="Left" Height="22" Margin="256,104,0,0" VerticalAlignment="Top" Width="72"/>
+        <Label x:Name="TextBoxLabel22" Content="Single Tube Flow 3R L/M" HorizontalAlignment="Left" Height="26" Margin="164,323,0,0" VerticalAlignment="Top" Width="156"/>
     </Grid>
 </Window>

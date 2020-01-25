@@ -32,6 +32,8 @@ Class MainWindow
 
     Dim Pulsation_Rotor_Segment(360 * 4) As Double 'big number
 
+    Dim Pulsation_Rotor_Segment_Out(360 * 4) As Double 'big number
+
 
     Dim Pulsation_Rotor(360) As Double
 
@@ -387,7 +389,7 @@ Class MainWindow
             Angle_Section_Start = 1
         End If
 
-        Angle_Section = (360 / NumRollers)
+        Angle_Section = (360 / NumRollers) + TrackLeadOutAngle 'This number defines the angle swept by the algorithm needs to be longer for long lead outs > 60 Degrees
         ' Angle_Section_Start = TrackSweepAngle + 180 - (RollerAngleInteger * 2)
 
         Dim myPen As Pen
@@ -622,47 +624,47 @@ Class MainWindow
                     Dim factor_pos As Integer = count_area_positive(DegreeOffset)
 
                     TextBox1.Text = TextBox1.Text + Summed_Area_Positive(DegreeOffset).ToString + vbCrLf
-                        TextBox2.Text = TextBox2.Text + Diff_POS.ToString + vbCrLf
-                        TextBox3.Text = TextBox3.Text + (Volume_per_increment - Diff_POS).ToString + vbCrLf
+                    TextBox2.Text = TextBox2.Text + Diff_POS.ToString + vbCrLf
+                    TextBox3.Text = TextBox3.Text + (Volume_per_increment - Diff_POS).ToString + vbCrLf
 
-                        Volume_increment_m3 = ((Volume_per_increment - Diff_POS) * RPM * 1000.0 * 360.0)
-
-
-
-                        TextBox7.Text = TextBox7.Text + Volume_increment_m3.ToString + vbCrLf
-
-                        Pulsation_Rotor_Segment(segment_index) = Volume_increment_m3
-
-                        Average_Flow = Average_Flow + Volume_increment_m3 / (360 / NumRollers)
-
-                        'uses full calculation
-                        TextBox_Average_Flow.Text = (Average_Flow * 4.0).ToString
-
-                        'Flow_Val
-                        'uses volume of tube minus rotor occlusion
-                        'TextBox_Average_Flow.Text = (Flow_Val + full_flow).ToString
-
-                        segment_index = segment_index + 1
+                    Volume_increment_m3 = ((-Diff_POS) * RPM * 1000.0 * 360.0) ' removed  Volume_per_increment
 
 
-                        'End If
 
-                        Dim gX1 As Integer
-                        Dim gY1 As Integer
-                        Dim gX2 As Integer
-                        Dim gY2 As Integer
+                    TextBox7.Text = TextBox7.Text + Volume_increment_m3.ToString + vbCrLf
 
-                        gX1 = (DegreeOffset - Angle_Section_Start) * 2 + r2.X
-                        gY1 = (Volume_per_increment - Diff_POS) * -1500000000 + r2.Y + r2.Height * 2 / 8
-                        gX2 = (DegreeOffset - Angle_Section_Start) * 2 + r2.X
-                        gY2 = r2.Y + (r2.Height * 2 / 8)
+                    Pulsation_Rotor_Segment(segment_index) = Volume_increment_m3
 
-                        myGraphics2.DrawLine(myPen, gX1, gY1, gX2, gY2)
+                    Average_Flow = Average_Flow + Volume_increment_m3 / Angle_Section  '(360 / NumRollers) Average flow can't be calcuated here must be done after combine
 
-                        'frmDialogue2.Invalidate(r2)
+                    'uses full calculation
+                    TextBox_Average_Flow.Text = (Average_Flow * 4.0).ToString
 
-                    End If
+                    'Flow_Val
+                    'uses volume of tube minus rotor occlusion
+                    'TextBox_Average_Flow.Text = (Flow_Val + full_flow).ToString
+
+                    segment_index = segment_index + 1
+
+
+                    'End If
+
+                    Dim gX1 As Integer
+                    Dim gY1 As Integer
+                    Dim gX2 As Integer
+                    Dim gY2 As Integer
+
+                    gX1 = (DegreeOffset - Angle_Section_Start) * 2 + r2.X
+                    gY1 = (Volume_per_increment - Diff_POS) * -1500000000 + r2.Y + r2.Height * 2 / 8
+                    gX2 = (DegreeOffset - Angle_Section_Start) * 2 + r2.X
+                    gY2 = r2.Y + (r2.Height * 2 / 8)
+
+                    myGraphics2.DrawLine(myPen, gX1, gY1, gX2, gY2)
+
+                    'frmDialogue2.Invalidate(r2)
+
                 End If
+            End If
 
             'Still in scope of for next loop don't reset angle selection start.
             'Angle_Section = (360 / NumRollers) * 4
@@ -676,9 +678,9 @@ Class MainWindow
                     Diff_NEG = Summed_Area_Negative(DegreeOffset) - Summed_Area_Negative(DegreeOffset - 1)
 
                     Dim factor_neg As Integer = count_area_negative(DegreeOffset)
-                    TextBox4.Text = TextBox4.Text + Summed_Area_Negative(DegreeOffset).ToString + vbCrLf
-                    TextBox5.Text = TextBox5.Text + Diff_NEG.ToString + vbCrLf
-                    TextBox6.Text = TextBox6.Text + (-Volume_per_increment - Diff_NEG).ToString + vbCrLf
+                    'TextBox4.Text = TextBox4.Text + Summed_Area_Negative(DegreeOffset).ToString + vbCrLf
+                    'TextBox5.Text = TextBox5.Text + Diff_NEG.ToString + vbCrLf
+                    'TextBox6.Text = TextBox6.Text + (-Volume_per_increment - Diff_NEG).ToString + vbCrLf
 
 
 
@@ -705,19 +707,32 @@ Class MainWindow
         Next
 
 
-        For index2 As Integer = 1 To (360 / NumRollers) Step 1 ' 1 DEGREE
+        For index3 As Integer = 1 To (360 * 4) 'make sure set is zero
+
+            Pulsation_Rotor_Segment_Out(index3) = 0
+
+        Next
+
+
+        For index2 As Integer = 1 To Angle_Section Step 1 ' 1 DEGREE  was  (360 / NumRollers)
 
             For roller_index As Integer = 0 To (NumRollers * 2) - 1 ' extend dataset
-                Pulsation_Rotor_Segment(index2 + (roller_index * (360 / NumRollers))) = Pulsation_Rotor_Segment(index2)
+                Pulsation_Rotor_Segment_Out(index2 + (roller_index * (360 / NumRollers))) = Pulsation_Rotor_Segment_Out(index2 + (roller_index * (360 / NumRollers))) + Pulsation_Rotor_Segment(index2) 'Now add to itself
             Next
 
         Next
 
-        For index2 = 1 To (360) Step 1 ' 1 DEGREE
+        TextBox2.Text = ""
 
-            'TextBox8.Text = TextBox8.Text + Pulsation_Rotor_Segment(index2).ToString + vbCrLf
+        For index2 = 1 To (720) Step 1 ' 1 DEGREE
+
+            TextBox8.Text = TextBox8.Text + Pulsation_Rotor_Segment_Out(index2).ToString + vbCrLf
 
         Next
+
+
+        Dim Volume_inc As Double
+        Volume_inc = ((Volume_per_increment) * RPM * 1000.0 * 360.0)
 
 
         'Create offset datasets
@@ -726,10 +741,15 @@ Class MainWindow
             Pulsation_Rotor(index2) = 0
             For roller_index As Integer = 0 To 4 - 1 ' 4 = number of tubes
 
-                Pulsation_Rotor(index2) = Pulsation_Rotor(index2) + Pulsation_Rotor_Segment(index2 + (roller_index * (360 / NumRollers) / 4)) '4 = number of tubes
+                Pulsation_Rotor(index2) = Pulsation_Rotor(index2) + Pulsation_Rotor_Segment_Out(index2 + (roller_index * (360 / NumRollers) / 4)) '4 = number of tubes
+
             Next
 
-            TextBox8.Text = TextBox8.Text + Pulsation_Rotor(index2).ToString + vbCrLf
+            'At this point the constant flow can be added.
+
+            Pulsation_Rotor(index2) = Pulsation_Rotor(index2) + (Volume_inc * 4.0)
+
+            TextBox2.Text = TextBox2.Text + Pulsation_Rotor(index2).ToString + vbCrLf
 
         Next
 
